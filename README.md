@@ -5,5 +5,6 @@ A plugin for Godot Engine which will let you take beautified snapshots of your c
 Inspired by: [carbon](https://carbon.now.sh/) and [vscode code snapshot](https://marketplace.visualstudio.com/items?itemName=robertz.code-snapshot#:~:text=Open%20the%20command%20palette%20(Ctrl,button%20to%20save%20the%20screenshot.)).
 
 ### examples
+![example_0](imgs/code_snapshot.gif)
 ![example_1](imgs/screenshot.png)
 ![example_2](imgs/screenshot_2.png)
