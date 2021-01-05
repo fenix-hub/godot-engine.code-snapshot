@@ -1,4 +1,4 @@
-![icon](addons/code-snapshot/icon.png)
+<p align="center"><img src="addons/code-snapshot/icon.png"/></p>
 
 # Code Snapshot
 A plugin for Godot Engine which will let you take beautified snapshots of your code within the Editor.  Configure the frame as you like, with GDScript sintax already highlighted.  
