@@ -1,7 +1,7 @@
 # Plugin Specific ignores
 default_env.tres
-icon.png
-icon.png.import
+./icon.png
+./icon.png.import
 project.godot
 scn/
 
