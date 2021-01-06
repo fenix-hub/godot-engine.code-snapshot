@@ -4,6 +4,8 @@ default_env.tres
 ./icon.png.import
 project.godot
 scn/
+./screenshot.png
+./snapshot.png
 
 # Godot-specific ignores
 .import/

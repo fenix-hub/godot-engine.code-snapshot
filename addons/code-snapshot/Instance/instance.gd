@@ -2,14 +2,21 @@ tool
 class_name CodeSnapshotInstance
 extends Control
 
-onready var script_container : PanelContainer = $VSplitContainer/Background/ScriptContainer
+onready var viewport_container : ViewportContainer = $VSplitContainer/ViewportContainer
+onready var viewport : Viewport = viewport_container.get_child(0)
+onready var snapshot_container : ColorRect = viewport.get_node("Background")
+onready var settings_container : VBoxContainer = $VSplitContainer/Settings
+
+onready var script_container : PanelContainer = snapshot_container.get_node("ScriptContainer")
 onready var script_edit : TextEdit = script_container.get_node("VBox/ScriptEdit")
-onready var background : ColorRect = $VSplitContainer/Background
-onready var template_menu : PopupMenu = $VSplitContainer/Settings/Template/TemplateMenu.get_popup()
-onready var colors_list : VBoxContainer = $VSplitContainer/Settings/Colors/ColorsList
-onready var properties_list : VBoxContainer = $VSplitContainer/Settings/Properties/PropertiesList
-onready var from : LineEdit = $VSplitContainer/Settings/Properties/PropertiesList/from_line_to_line/from
-onready var to : LineEdit = $VSplitContainer/Settings/Properties/PropertiesList/from_line_to_line/to
+onready var template_menu : PopupMenu = settings_container.get_node("Template/TemplateMenu").get_popup()
+onready var colors_list : VBoxContainer = settings_container.get_node("Colors/ColorsList")
+onready var properties_list : VBoxContainer = settings_container.get_node("Properties/PropertiesList")
+onready var from : LineEdit = settings_container.get_node("Properties/PropertiesList/from_line_to_line/from")
+onready var to : LineEdit = settings_container.get_node("Properties/PropertiesList/from_line_to_line/to")
+
+var script_editor : ScriptEditor
+var editor_settings : EditorSettings
 
 var template_dir : String = "res://addons/code-snapshot/godot-syntax-themes/"
 var templates : PoolStringArray
@@ -17,8 +24,17 @@ var template_file : String = "Darcula"
 
 var keywords : Array = ["self", "if", "else", "elif", "or", "and", "yield","func", "onready", "export", "var", "tool", "extends", "void", "null", "true", "false", "class_name", "print", "return", "pass", "match", "in", "define", "const"]
 var types : PoolStringArray = ClassDB.get_class_list()
-var script_editor : ScriptEditor
 var from_line_to : Array = [-1, -1]
+var lines_count_as_min_size : bool = true
+
+
+func set_editor_settings(settings : EditorSettings):
+	editor_settings = settings
+
+func set_script_editor(editor : ScriptEditor):
+	script_editor = editor
+	script_editor.connect("editor_script_changed", self, "_on_script_changed")
+	_on_script_changed(script_editor.get_current_script())
 
 func hide_nodes():
 	colors_list.hide()
@@ -26,6 +42,7 @@ func hide_nodes():
 
 func _ready() -> void:
 	yield(get_tree(),"idle_frame")
+#	viewport.set_process_input(true)
 	script_edit.set_text("")
 	template_menu.connect("index_pressed", self, "_on_index_pressed")
 	hide_nodes()
@@ -85,7 +102,7 @@ func set_script_edit_size(size : Vector2):
 	script_container.rect_size = size
 
 func set_background_color(color : Color):
-	background.color = color
+	snapshot_container.color = color
 
 func set_script_box_color(color : Color):
 	script_container.get("custom_styles/panel").set("bg_color", color)
@@ -117,11 +134,6 @@ func add_comment_color(color : Color):
 func add_string_color(color : Color):
 	script_edit.add_color_region('"','"',color,false)
 
-func set_script_editor(editor : ScriptEditor):
-	script_editor = editor
-	script_editor.connect("editor_script_changed", self, "_on_script_changed")
-	_on_script_changed(script_editor.get_current_script())
-
 func set_from_line_to(from : int, to : int):
 	from_line_to = [from, to]
 
@@ -134,6 +146,15 @@ func _on_script_changed(script : Script):
 	var code_array : Array = code.c_unescape().split("\n")
 	code = PoolStringArray(code_array.slice(from_line_to[0]-1 if from_line_to[0] != -1 and from_line_to[0] < code_array.size()-1 else 0, from_line_to[1]-1 if from_line_to[1] != -1 and from_line_to[1] < code_array.size()-1 else code_array.size()-1)).join("\n")
 	script_edit.set_text(code)
+	change_frame_min_size()
+
+func change_frame_min_size():
+	if lines_count_as_min_size:
+		script_edit.rect_min_size.y = script_edit.get_line_count() * (editor_settings.get_setting("interface/editor/code_font_size") + 6) if script_edit.get_line_count() <= 35 else 132
+		viewport_container.rect_min_size.y = script_edit.rect_min_size.y + 168
+	else:
+		script_edit.rect_min_size.y = 0
+		viewport_container.rect_min_size.y = 300
 
 func _on_ColorsBtn_toggled(button_pressed : bool):
 	colors_list.visible = button_pressed
@@ -156,8 +177,7 @@ func _on_export_confirmed(path : String):
 	path_to_save = path
 
 func _on_Save_hide():
-	yield(get_tree().create_timer(1),"timeout")
-	var image = get_viewport().get_texture().get_data().get_rect(Rect2(background.get_global_transform_with_canvas().get_origin() + Vector2(0, $VSplitContainer/Settings.rect_size.y) - Vector2(0, 52), background.rect_size))
+	var image :Image = viewport.get_texture().get_data()
 	image.flip_y()
 	image.save_png(path_to_save)
 
@@ -170,22 +190,22 @@ func _on_autowrap_value_toggled(button_pressed):
 func _on_draw_tabs_value_toggled(button_pressed):
 	script_edit.draw_tabs = button_pressed
 
-func _on_from_text_entered(new_text):
+func _on_from_text_changed(new_text):
 	if new_text.is_valid_integer():
 		if int(new_text) == 0:
 			new_text = str(-1)
 			from.set_text(new_text)
 		from_line_to[0] = int(new_text)
-		print(from_line_to)
 		_on_script_changed(current_script)
 
-func _on_to_text_entered(new_text):
+
+
+func _on_to_text_changed(new_text):
 	if new_text.is_valid_integer():
 		if int(new_text) == 0:
 			new_text = str(-1)
 			to.set_text(new_text)
 		from_line_to[1] = int(new_text)
-		print(from_line_to)
 		_on_script_changed(current_script)
 
 
@@ -195,3 +215,12 @@ func _on_Reload_pressed():
 
 func _on_minimap_draw_value_toggled(button_pressed):
 	script_edit.minimap_draw = button_pressed
+
+
+func _on_ViewportContainer_item_rect_changed():
+	snapshot_container.rect_size = viewport_container.rect_size
+
+
+func _on_minsie_value_toggled(button_pressed):
+	lines_count_as_min_size = button_pressed
+	change_frame_min_size()
