@@ -14,6 +14,7 @@ onready var colors_list : VBoxContainer = settings_container.get_node("Colors/Co
 onready var properties_list : VBoxContainer = settings_container.get_node("Properties/PropertiesList")
 onready var from : LineEdit = settings_container.get_node("Properties/PropertiesList/from_line_to_line/from")
 onready var to : LineEdit = settings_container.get_node("Properties/PropertiesList/from_line_to_line/to")
+onready var save : FileDialog = $Save
 
 var script_editor : ScriptEditor
 var editor_settings : EditorSettings
@@ -26,7 +27,8 @@ var keywords : Array = ["self", "if", "else", "elif", "or", "and", "yield","func
 var types : PoolStringArray = ClassDB.get_class_list()
 var from_line_to : Array = [-1, -1]
 var lines_count_as_min_size : bool = true
-
+var exporting_extension : String 
+var path_to_save : String
 
 func set_editor_settings(settings : EditorSettings):
 	editor_settings = settings
@@ -83,6 +85,7 @@ func apply_template(template : String):
 			if setting == "string_color" : add_string_color(config.get_value("color_theme", setting))
 			if setting == "engine_type_color" : add_engine_type_color(config.get_value("color_theme",setting))
 			if setting == "gdscript/node_path_color" : add_node_path_color(config.get_value("color_theme",setting))
+			if setting == "text_color" : set_text_color(config.get_value("color_theme",setting))
 			script_edit.set("custom_colors/"+setting, config.get_value("color_theme",setting))
 			set_node_color(setting, config)
 
@@ -104,9 +107,14 @@ func set_script_edit_size(size : Vector2):
 func set_background_color(color : Color):
 	snapshot_container.color = color
 
+# Script Box Color
 func set_script_box_color(color : Color):
 	script_container.get("custom_styles/panel").set("bg_color", color)
 	set_script_background_color(color)
+
+func get_script_box_color() -> String:
+	return "#"+script_container.get("custom_styles/panel").get("bg_color").to_html(false)
+# ................
 
 func set_member_variable_color(color : Color):
 	script_edit.set("custom_colors/member_variable_color", color)
@@ -114,15 +122,24 @@ func set_member_variable_color(color : Color):
 func set_function_color(color : Color):
 	script_edit.set("custom_colors/function_color", color)
 
+# Script Background color .....
 func set_script_background_color(color : Color):
 	script_edit.set("custom_colors/background_color", color)
+
+func get_script_background_color() -> String:
+	return "#"+script_edit.get("custom_colors/background_color").to_html(false)
+# ..............
 
 func set_number_color(color : Color):
 	script_edit.set("custom_colors/number_color", color)
 
+# Text Color .....
 func set_text_color(color : Color):
 	script_edit.set("custom_colors/font_color", color)
 
+func get_text_color() -> String:
+	return "#"+script_edit.get("custom_colors/font_color").to_html(false)
+# ................
 
 func add_keywords_color(color : Color):
 	for keyword in keywords:
@@ -167,19 +184,26 @@ func _on_PropertiesBtn_toggled(button_pressed : bool):
 	else: $VSplitContainer/Settings/Properties/PropertiesBtn.set_text("> Properties")
 
 
-onready var save : FileDialog = $Save
-func _on_Export_pressed():
-	save.popup()
 
-var path_to_save : String
 
 func _on_export_confirmed(path : String):
 	path_to_save = path
 
 func _on_Save_hide():
-	var image :Image = viewport.get_texture().get_data()
-	image.flip_y()
-	image.save_png(path_to_save)
+	match exporting_extension:
+		"png":
+			var image : Image = viewport.get_texture().get_data()
+			image.flip_y()
+			image.save_png(path_to_save)
+		"html":
+			var file : File = File.new()
+			file.open(path_to_save, File.WRITE)
+			var content : String = '<!DOCTYPE html>\n'
+			content+='<pre>\n<code class="gdscript-codeblock">\n'
+			content+=script_edit.text+"\n"
+			content+='</code>\n</pre>'
+			file.store_line(content)
+			file.close()
 
 
 func _on_autowrap_value_toggled(button_pressed):
@@ -224,3 +248,18 @@ func _on_ViewportContainer_item_rect_changed():
 func _on_minsie_value_toggled(button_pressed):
 	lines_count_as_min_size = button_pressed
 	change_frame_min_size()
+
+func _on_ExportPNG_pressed():
+	exporting_extension = "png"
+	save.filters = ["*.png ; Portable Network Graphics"]
+	save.current_file = "snapshot.png"
+	save.popup()
+
+
+func _on_ExportHTML_pressed():
+	exporting_extension = "html"
+	save.filters = ["*.html ; HyperText Markup Language"]
+	save.current_file = "snapshot.html"
+	save.popup()
+
+
