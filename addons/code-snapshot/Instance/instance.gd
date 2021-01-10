@@ -24,7 +24,7 @@ var templates : PoolStringArray
 var template_file : String = "Darcula"
 
 var keywords : Array = ["self", "if", "else", "elif", "or", "and", "yield","func", "onready", "export", "var", "tool", "extends", "void", "null", "true", "false", "class_name", "print", "return", "pass", "match", "in", "define", "const"]
-var types : PoolStringArray = ClassDB.get_class_list()
+var types : PoolStringArray = ["bool","int","float","String","Vector2","Vector3","Array","Dictionary","Color", "PoolStringArray","PoolIntArray","PoolRealArray"]
 var from_line_to : Array = [-1, -1]
 var lines_count_as_min_size : bool = true
 var exporting_extension : String 
@@ -72,6 +72,7 @@ func _on_index_pressed(index : int):
 	$VSplitContainer/Settings/Template/TemplateMenu.set_text("> "+templates[index])
 
 func apply_template(template : String):
+	script_edit.clear_colors()
 	var config = ConfigFile.new()
 	var err = config.load(template_dir+"%s.tet"%template)
 	if err == OK: # If not, something went wrong with the file loading
@@ -96,7 +97,10 @@ func add_node_path_color(color : Color):
 	script_edit.add_color_region("$","", color, false)
 
 func add_engine_type_color(color : Color):
-	for type in types: script_edit.add_keyword_color(type, color)
+	for type in types: 
+		script_edit.add_keyword_color(type, color)
+	for type in ClassDB.get_class_list():
+		script_edit.add_keyword_color(type, color)
 
 func add_function_definition_color(color : Color):
 	script_edit.add_color_region("func ","", color)
