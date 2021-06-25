@@ -6,5 +6,4 @@ Inspired by: [carbon](https://carbon.now.sh/) and [vscode code snapshot](https:/
 
 ### examples
 ![example_0](imgs/code_snapshot.gif)
-![example_1](imgs/screenshot.png)
-![example_2](imgs/screenshot_2.png)
+![example_1](imgs/snapshot.png)

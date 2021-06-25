@@ -259,10 +259,13 @@ func _on_minimap_draw_value_toggled(button_pressed):
 func _on_ViewportContainer_item_rect_changed():
     snapshot_container.rect_size = viewport_container.rect_size
 
-
 func _on_minsie_value_toggled(button_pressed):
     lines_count_as_min_size = button_pressed
     change_frame_min_size()
+
+func _on_show_line_numbers_toggled(button_pressed):
+    snapshot_container.get_node("ScriptContainer/VBox/ScriptEdit").show_line_numbers = button_pressed
+    pass # Replace with function body.
 
 func _on_ExportPNG_pressed():
     exporting_extension = "png"
@@ -276,5 +279,6 @@ func _on_ExportHTML_pressed():
     save.filters = ["*.html ; HyperText Markup Language"]
     save.current_file = "snapshot.html"
     save.popup()
+
 
 
