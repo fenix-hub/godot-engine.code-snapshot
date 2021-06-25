@@ -1,0 +1,203 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.156863, 0.168627, 0.203922, 1 )
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+shadow_color = Color( 0, 0, 0, 0.0980392 )
+shadow_size = 15
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxFlat" id=4]
+content_margin_left = 0.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color( 0.898039, 0.129412, 0.129412, 1 )
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id=5]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 0.898039, 0.752941, 0.129412, 1 )
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id=6]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color( 0.129412, 0.898039, 0.211765, 1 )
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id=7]
+content_margin_left = 14.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color( 0, 0, 0, 0 )
+draw_center = false
+
+[node name="ScriptContainer" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 53.0
+margin_top = 56.0
+margin_right = -56.0
+margin_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBox" type="VBoxContainer" parent="."]
+margin_right = 915.0
+margin_bottom = 476.0
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="VBox"]
+margin_right = 915.0
+margin_bottom = 10.0
+custom_styles/separator = SubResource( 2 )
+custom_constants/separation = 10
+
+[node name="TopBar" type="HBoxContainer" parent="VBox"]
+margin_top = 14.0
+margin_right = 915.0
+margin_bottom = 28.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_constants/separation = 8
+
+[node name="VSeparator" type="VSeparator" parent="VBox/TopBar"]
+margin_right = 4.0
+margin_bottom = 14.0
+custom_styles/separator = SubResource( 3 )
+
+[node name="red" type="Panel" parent="VBox/TopBar"]
+margin_left = 12.0
+margin_top = 2.0
+margin_right = 22.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 10, 10 )
+size_flags_vertical = 4
+custom_styles/panel = SubResource( 4 )
+
+[node name="yellow" type="Panel" parent="VBox/TopBar"]
+margin_left = 30.0
+margin_top = 2.0
+margin_right = 40.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 10, 10 )
+size_flags_vertical = 4
+custom_styles/panel = SubResource( 5 )
+
+[node name="green" type="Panel" parent="VBox/TopBar"]
+margin_left = 48.0
+margin_top = 2.0
+margin_right = 58.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 10, 10 )
+size_flags_vertical = 4
+custom_styles/panel = SubResource( 6 )
+
+[node name="VSeparator2" type="VSeparator" parent="VBox/TopBar"]
+margin_left = 66.0
+margin_right = 70.0
+margin_bottom = 14.0
+custom_styles/separator = SubResource( 3 )
+
+[node name="ScriptName" type="Label" parent="VBox/TopBar"]
+margin_left = 78.0
+margin_right = 847.0
+margin_bottom = 14.0
+size_flags_horizontal = 7
+custom_colors/font_color = Color( 1, 1, 1, 0.705882 )
+text = "script.gd"
+align = 1
+valign = 1
+
+[node name="VSeparator3" type="VSeparator" parent="VBox/TopBar"]
+margin_left = 855.0
+margin_right = 915.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 60, 0 )
+custom_styles/separator = SubResource( 3 )
+
+[node name="HSeparator2" type="HSeparator" parent="VBox"]
+margin_top = 32.0
+margin_right = 915.0
+margin_bottom = 37.0
+custom_styles/separator = SubResource( 2 )
+custom_constants/separation = 5
+
+[node name="ScriptEdit" type="TextEdit" parent="VBox"]
+margin_top = 41.0
+margin_right = 915.0
+margin_bottom = 467.0
+focus_mode = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/normal = SubResource( 7 )
+custom_colors/member_variable_color = Color( 0.737255, 0.737255, 0.737255, 1 )
+custom_colors/code_folding_color = Color( 0.423529, 0.423529, 0.423529, 1 )
+custom_colors/function_color = Color( 1, 1, 1, 1 )
+custom_colors/safe_line_number_color = Color( 0.372549, 0.529412, 0.372549, 0.34902 )
+custom_colors/symbol_color = Color( 0.737255, 0.737255, 0.737255, 1 )
+custom_colors/caret_background_color = Color( 0.266667, 0.266667, 0.266667, 1 )
+custom_colors/bookmark_color = Color( 0.529412, 0.686275, 0.529412, 1 )
+custom_colors/selection_color = Color( 0, 0.764706, 1, 0.188235 )
+custom_colors/caret_color = Color( 0.372549, 0.686275, 0.686275, 1 )
+custom_colors/breakpoint_color = Color( 1, 0.529412, 0, 1 )
+custom_colors/font_color = Color( 0.737255, 0.737255, 0.737255, 1 )
+custom_colors/line_number_color = Color( 0.266667, 0.266667, 0.266667, 1 )
+custom_colors/completion_font_color = Color( 0.737255, 0.737255, 0.737255, 1 )
+custom_colors/completion_scroll_color = Color( 0.423529, 0.423529, 0.423529, 1 )
+custom_colors/number_color = Color( 1, 1, 0.686275, 1 )
+custom_colors/completion_background_color = Color( 0.266667, 0.266667, 0.266667, 1 )
+custom_colors/brace_mismatch_color = Color( 1, 0.2, 0.2, 1 )
+custom_colors/current_line_color = Color( 1, 1, 1, 0.0431373 )
+custom_colors/completion_selected_color = Color( 0.423529, 0.423529, 0.423529, 1 )
+custom_colors/executing_line_color = Color( 0, 0, 0, 1 )
+custom_colors/mark_color = Color( 1, 0.196078, 0.196078, 0.219608 )
+custom_colors/word_highlighted_color = Color( 1, 1, 1, 0.101961 )
+custom_colors/completion_existing_color = Color( 0.372549, 0.686275, 0.686275, 0.34902 )
+syntax_highlighting = true
+show_line_numbers = true
+override_selected_font_color = true
+context_menu_enabled = false
+shortcut_keys_enabled = false
+virtual_keyboard_enabled = false
+selecting_enabled = false
+hiding_enabled = true
+caret_moving_by_right_click = false
+
+[node name="HSeparator3" type="HSeparator" parent="VBox"]
+margin_top = 471.0
+margin_right = 915.0
+margin_bottom = 476.0
+custom_styles/separator = SubResource( 2 )
+custom_constants/separation = 5
